@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7643F"
+    android:orientation="vertical"
+    tools:context=".Auth">
+
+
+    <Button
+        android:id="@+id/menu_admin_beg_na_vremya"
+        android:background="#E69C4F"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Бег на время" />
+
+    <Button
+        android:id="@+id/menu_admin_beg_na_vinoslivost"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:background="#E69C4F"
+        android:layout_height="wrap_content"
+        android:text="Бег на выносливость" />
+
+    <Button
+        android:id="@+id/menu_admin_vipadi"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:background="#E69C4F"
+        android:layout_height="wrap_content"
+        android:text="Выпады" />
+
+    <Button
+        android:id="@+id/menu_admin_otzimania"
+        android:layout_width="match_parent"
+        android:background="#E69C4F"
+        android:layout_marginTop="5dp"
+        android:layout_height="wrap_content"
+        android:text="Отжимания" />
+
+    <Button
+        android:id="@+id/menu_admin_planka"
+        android:layout_width="match_parent"
+        android:background="#E69C4F"
+        android:layout_marginTop="5dp"
+        android:layout_height="wrap_content"
+        android:text="Планка" />
+
+    <Button
+        android:id="@+id/menu_admin_prisedaniya"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:background="#E69C4F"
+        android:layout_height="wrap_content"
+        android:text="Приседания" />
+
+
+</LinearLayout>
