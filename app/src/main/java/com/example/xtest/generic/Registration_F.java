@@ -1,4 +1,4 @@
-package com.example.xtest;
+package com.example.xtest.generic;
 
 public class Registration_F {
     private String login, password, name;

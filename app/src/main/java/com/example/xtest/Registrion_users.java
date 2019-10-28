@@ -11,11 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.gson.JsonElement;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.xtest.generic.Login_F;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,20 +39,30 @@ public class Registrion_users extends AppCompatActivity {
                 name = et_name.getText().toString();
                 password = et_pass.getText().toString();
 
-//                Log.e("ZAPROS OUT", JO);
-//
-//                Network.getInstance().getApi().registrationAPI(JO).enqueue(new Callback<JsonElement>() {
-//                    @Override
-//                    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-//                        Log.e("URRRRRAAAAA" , response.body().toString());
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<JsonElement> call, Throwable t) {
-//                        Log.e("URRRRRAAAAA" , t.toString());
-//                    }
-//                });
+                Map<String,String> map = new HashMap<>();
+                map.put("login", login);
+                map.put("name", name);
+                map.put("password", password);
 
+                Network.getInstance().getApi().registrationAPI(map).enqueue(new Callback<ServerResponce<Login_F>>() {
+                    @Override
+                    public void onResponse(Call<ServerResponce<Login_F>> call, Response<ServerResponce<Login_F>> response) {
+                        try {
+                            Log.e("MYAPP", response.body().data.getName());
+                            Log.e("MYAPP", response.body().data.getRegister_date());
+                            Log.e("check", response.body().data.getFull_name().toString());
+                            Log.e("MYAPP", response.body().data.settings.getLanguage());
+                            Log.e("MYAPP", response.body().data.getToken());
+                        }catch (Exception e){
+                            Log.e("err", e.toString());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ServerResponce<Login_F>> call, Throwable t) {
+
+                    }
+                });
             }
         });
     }

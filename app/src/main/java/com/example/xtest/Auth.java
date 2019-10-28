@@ -1,8 +1,5 @@
 package com.example.xtest;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,17 +8,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.JsonElement;
+import com.example.xtest.generic.Login_F;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.MacSpi;
-
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -30,7 +20,8 @@ public class Auth extends AppCompatActivity {
 
     private Button b_in_auth, b_registration_auth, b_repass_auth;
     private EditText et_login_auth, et_password_auth;
-    private String login, password, passMD5, token;
+    private String login, password, passMD5;
+    public static String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,30 +43,22 @@ public class Auth extends AppCompatActivity {
                 Log.e("SUCCESS", password);
                 Log.e("SUCCESS", "SUCCESS");
 
-                Network.getInstance().getApi().authAPI(login, password).enqueue(new Callback<JsonElement>() {
+                Network.getInstance().getApi().authAPI(login, password).enqueue(new Callback<ServerResponce<Login_F>>() {
                     @Override
-                    public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                    public void onResponse(Call<ServerResponce<Login_F>> call, Response<ServerResponce<Login_F>> response) {
                         try {
-                            if(response.body().toString() != null) {
-                                JSONObject JO = new JSONObject(response.body().toString());
-                                Log.e("JO", JO.getString("data"));
-                                JSONObject JO_f = new JSONObject(JO.getString("data"));
-                                token = JO_f.getString("token");
-                                Log.e("HELP ME PLEASE", token);
-                                if (token != null) {
-                                    Toast.makeText(Auth.this, "Token: " + token, Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(Auth.this, Roli.class));
-                                } else {
-                                    Toast.makeText(Auth.this, "Incorrect", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (JSONException e) {
+
+                            if (response.body() != null)
+                                Q.token = response.body().data.getToken();
+                            else
+                                Toast.makeText(getApplicationContext(), "Ошибка авторизации", Toast.LENGTH_SHORT);
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<JsonElement> call, Throwable t) {
+                    public void onFailure(Call<ServerResponce<Login_F>> call, Throwable t) {
                         Log.e("ERROR", t.toString());
                     }
                 });
