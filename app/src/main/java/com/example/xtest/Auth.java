@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.xtest.generic.Login_F;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import retrofit2.Call;
@@ -44,17 +45,16 @@ public class Auth extends AppCompatActivity {
                 Log.e("SUCCESS", password);
                 Log.e("SUCCESS", "SUCCESS");
 
-                Network.getInstance().getApi().authAPI(login, password).enqueue(new Callback<ServerResponce<Login_F>>() {
+                Network.getInstance().getApi().authAPI(login, password).enqueue(new Callback<ServerResponse<Login_F>>() {
                     @Override
-                    public void onResponse(Call<ServerResponce<Login_F>> call, Response<ServerResponce<Login_F>> response) {
+                    public void onResponse(Call<ServerResponse<Login_F>> call, Response<ServerResponse<Login_F>> response) {
                         try {
                             Log.e("CHECK", String.valueOf(Q.checkin));
-                            Log.e("SUCCESS", response.body().getSuccess().toString());
 
                             if(Q.checkauth){
                                 Q.checkin = 0;
                             }
-                            if (response.body().data.token != null && Q.checkin <= 3) {
+                            if (response.isSuccessful() && Q.checkin <= 3) {
                                 Q.token = response.body().data.getToken();
                                 startActivity(new Intent(getApplicationContext(), News.class));
                             }
@@ -75,7 +75,7 @@ public class Auth extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ServerResponce<Login_F>> call, Throwable t) {
+                    public void onFailure(Call<ServerResponse<Login_F>> call, Throwable t) {
                         Log.e("ERROR", t.toString());
                     }
                 });

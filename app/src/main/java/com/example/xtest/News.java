@@ -1,16 +1,10 @@
 package com.example.xtest;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +14,6 @@ import com.example.xtest.GettersAndSetters.GAS_news;
 import com.example.xtest.adapters.CA_news;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import retrofit2.Call;
@@ -41,9 +34,9 @@ public class News extends AppCompatActivity {
         b_search = findViewById(R.id.news_b_search);
         et_search = findViewById(R.id.news_et_search);
 
-        Network.getInstance().getApi().newsAPI().enqueue(new Callback<ServerResponce<ArrayList<GAS_news>>>() {
+        Network.getInstance().getApi().newsAPI().enqueue(new Callback<ServerResponse<ArrayList<GAS_news>>>() {
             @Override
-            public void onResponse(Call<ServerResponce<ArrayList<GAS_news>>> call, Response<ServerResponce<ArrayList<GAS_news>>> response) {
+            public void onResponse(Call<ServerResponse<ArrayList<GAS_news>>> call, Response<ServerResponse<ArrayList<GAS_news>>> response) {
 
                 ListView listView = findViewById(R.id.news_lv_listView);
                 Q.gasNews.addAll(response.body().data);
@@ -53,7 +46,7 @@ public class News extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ServerResponce<ArrayList<GAS_news>>> call, Throwable t) {
+            public void onFailure(Call<ServerResponse<ArrayList<GAS_news>>> call, Throwable t) {
 
             }
         });

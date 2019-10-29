@@ -51,20 +51,18 @@ public class Registrion_users extends AppCompatActivity {
                 map.put("name", name);
                 map.put("password", password);
 
-                Network.getInstance().getApi().registrationAPI(map).enqueue(new Callback<ServerResponce<Login_F>>() {
+                Network.getInstance().getApi().registrationAPI(map).enqueue(new Callback<ServerResponse<Login_F>>() {
                     @Override
-                    public void onResponse(Call<ServerResponce<Login_F>> call, Response<ServerResponce<Login_F>> response) {
+                    public void onResponse(Call<ServerResponse<Login_F>> call, Response<ServerResponse<Login_F>> response) {
                         try {
 
-                            if (!response.body().success) {
+                            if (!response.isSuccessful()) {
                                 Toast.makeText(Registrion_users.this, "Ошибка", Toast.LENGTH_SHORT).show();
                             } else {
                                 startActivity(new Intent(Registrion_users.this, Auth.class));
                                 Toast.makeText(getApplicationContext(), "Регистрация прошла успешно.", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
-
-
 
                             Log.e("MYAPP", response.body().data.getName());
                             Log.e("MYAPP", response.body().data.getRegister_date());
@@ -77,7 +75,7 @@ public class Registrion_users extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<ServerResponce<Login_F>> call, Throwable t) {
+                    public void onFailure(Call<ServerResponse<Login_F>> call, Throwable t) {
 
                     }
                 });

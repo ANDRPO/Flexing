@@ -15,11 +15,11 @@ import retrofit2.http.Query;
 public interface Api {
 
     @POST("register")
-    Call<ServerResponce<Login_F>> registrationAPI(@Body Map map);
+    Call<ServerResponse<Login_F>> registrationAPI(@Body Map map);
 
     @GET("login")
-    Call<ServerResponce<Login_F>> authAPI(@Query("login") String login, @Query("password") String password);
+    Call<ServerResponse<Login_F>> authAPI(@Query("login") String login, @Query("password") String password);
 
     @GET("news")
-    Call<ServerResponce<ArrayList<GAS_news>>> newsAPI();
+    Call<ServerResponse<ArrayList<GAS_news>>> newsAPI();
 }
