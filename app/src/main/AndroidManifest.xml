@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.xtest">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,12 +14,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Registrion_users"></activity>
-        <activity android:name=".Parameters" />
-        <activity android:name=".MenuClient" />
-        <activity android:name=".MenuTrener" />
-        <activity android:name=".MenuAdmin" />
-        <activity android:name=".Roli" />
+        <activity android:name=".News" />
+        <activity android:name=".Registrion_users" />
         <activity android:name=".Auth">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +24,5 @@
             </intent-filter>
         </activity>
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

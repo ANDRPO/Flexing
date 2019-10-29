@@ -1,6 +1,6 @@
 package com.example.xtest.generic;
 
-class Setting {
+public class Setting {
     public String language;
     public Boolean push_news;
     public Boolean push_competition;

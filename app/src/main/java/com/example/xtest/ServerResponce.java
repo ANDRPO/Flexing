@@ -4,17 +4,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class ServerResponce<T> {
 
-    @SerializedName("data")
     public T data;
-
     public Boolean success;
 
-    public ServerResponce(T data, Boolean success) {
+    public ServerResponce(Boolean success, T data) {
         this.data = data;
         this.success = success;
     }
 
     public Boolean getSuccess() {
         return success;
+    }
+
+    public T getData() {
+        return data;
     }
 }

@@ -18,15 +18,16 @@ import retrofit2.Response;
 
 public class Auth extends AppCompatActivity {
 
-    private Button b_in_auth, b_registration_auth, b_repass_auth;
+    private Button b_in_auth, b_registration_auth;
     private EditText et_login_auth, et_password_auth;
-    private String login, password, passMD5;
-    public static String token;
+    private String login, password;
+    final int limitation = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
+
 
         b_in_auth = findViewById(R.id.b_in_auth);
         b_registration_auth = findViewById(R.id.b_registration_auth);
@@ -47,11 +48,27 @@ public class Auth extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ServerResponce<Login_F>> call, Response<ServerResponce<Login_F>> response) {
                         try {
+                            Log.e("CHECK", String.valueOf(Q.checkin));
+                            Log.e("SUCCESS", response.body().getSuccess().toString());
 
-                            if (response.body() != null)
+                            if(Q.checkauth){
+                                Q.checkin = 0;
+                            }
+                            if (response.body().data.token != null && Q.checkin <= 3) {
                                 Q.token = response.body().data.getToken();
-                            else
-                                Toast.makeText(getApplicationContext(), "Ошибка авторизации", Toast.LENGTH_SHORT);
+                                startActivity(new Intent(getApplicationContext(), News.class));
+                            }
+                            else {
+                                Q.checkin++;
+                                Toast.makeText(getApplicationContext(), "Ошибка авторизации", Toast.LENGTH_SHORT).show();
+                                if(Q.checkin == 1) {
+                                    Timing timing = new Timing();
+                                    Q.checkauth = false;
+                                    timing.execute(false);
+                                }
+                                if(Q.checkin > 3)
+                                    Toast.makeText(getApplicationContext(), "Вы забанены и обязаны ждать", Toast.LENGTH_SHORT).show();
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
