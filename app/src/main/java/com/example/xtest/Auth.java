@@ -22,8 +22,7 @@ public class Auth extends AppCompatActivity {
     private Button b_in_auth, b_registration_auth;
     private EditText et_login_auth, et_password_auth;
     private String login, password;
-    final int limitation = 3;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +63,7 @@ public class Auth extends AppCompatActivity {
                                 if(Q.checkin == 1) {
                                     Timing timing = new Timing();
                                     Q.checkauth = false;
-                                    timing.execute(false);
+                                    timing.execute(getApplicationContext());
                                 }
                                 if(Q.checkin > 3)
                                     Toast.makeText(getApplicationContext(), "Вы забанены и обязаны ждать", Toast.LENGTH_SHORT).show();
