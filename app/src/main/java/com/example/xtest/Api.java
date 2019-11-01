@@ -2,6 +2,7 @@ package com.example.xtest;
 
 import com.example.xtest.GettersAndSetters.GAS_news;
 import com.example.xtest.generic.Login_F;
+import com.example.xtest.generic.MapsResponce;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -13,6 +14,10 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface Api {
+    @GET("maps/api/directions/json")
+    Call<MapsResponce> getRoute(@Query("origin") String position,
+                                @Query("destination") String destination,
+                                @Query("key") String key);
 
     @POST("register")
     Call<ServerResponse<Login_F>> registrationAPI(@Body Map map);
