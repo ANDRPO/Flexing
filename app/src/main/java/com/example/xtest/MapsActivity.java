@@ -11,19 +11,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.xtest.generic.MapsResponce;
+import com.example.xtest.generic.GenMaps.Generic;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.data.Point;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -87,16 +90,43 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 Log.e("MYSTR", MyStrPos);
                 Log.e("PIVOSTR", PivoStrPos);
 
-                MapsJson.getInstance().getApi().getRoute(MyStrPos, PivoStrPos, Q.MapsToken).enqueue(new Callback<MapsResponce>() {
+                MapsJson.getInstance().getApi().getRoute(MyStrPos, PivoStrPos, Q.MapsToken).enqueue(new Callback<Generic>() {
                     @Override
-                    public void onResponse(Call<MapsResponce> call, Response<MapsResponce> response) {
-                        Log.e("O DA", response.body().getRoutes().toString());
+                    public void onResponse(Call<Generic> call, Response<Generic> response) {
+                        Log.e("O DA", String.valueOf(response.body().routes.get(0).legs.get(0).steps.get(0).polyline.getPoints()));
+                        PolylineDecoder polylineDecoder = new PolylineDecoder();
+                        List<LatLng> points;
+                        List<LatLng> points2;
+                        points = polylineDecoder.decode(response.body().routes.get(0).legs.get(0).steps.get(0).polyline.getPoints());
+                        points2 = polylineDecoder.decode(response.body().routes.get(0).overview_polyline.getPoints());
+                        for(int i = 0; i < points.size(); i++){
+                            Log.e("DECODER", points.get(i).toString());
+                        }
+                        PolylineOptions line = new PolylineOptions();
+                        line.width(4f).color(R.color.colorPrimary);
+                        LatLngBounds.Builder latLngBuilder = new LatLngBounds.Builder();
+                        for (int i = 0; i < points.size(); i++) {
 
+                            line.add(points.get(i));
+                            latLngBuilder.include(points.get(i));
+                        }
+
+                        for (int i = 0; i < points2.size(); i++) {
+
+                            line.add(points2.get(i));
+                            latLngBuilder.include(points2.get(i));
+                        }
+
+                        mMap.addPolyline(line);
+                        int size = getResources().getDisplayMetrics().widthPixels;
+                        LatLngBounds latLngBounds = latLngBuilder.build();
+                        CameraUpdate track = CameraUpdateFactory.newLatLngBounds(latLngBounds, size, size, 25);
+                        mMap.moveCamera(track);
                     }
 
                     @Override
-                    public void onFailure(Call<MapsResponce> call, Throwable t) {
-
+                    public void onFailure(Call<Generic> call, Throwable t) {
+                        Log.e("NOMARSHRUT", t.toString());
                     }
                 });
             }
