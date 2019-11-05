@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,12 +18,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.maps.android.data.Point;
+import com.google.maps.android.PolyUtil;
 
 import java.util.List;
 
@@ -36,14 +37,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback {
 
-    private boolean mLocationPermissionGranted;
     private GoogleMap mMap;
     private Button search, ZaPivasom;
-    LocationManager locationManager;
-    String provider;
     Marker IMmarker, Tap;
-    LatLng Vihod, Vhod;
     LatLng MyPos, Pivopos;
+    Polyline polyline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +52,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         search = findViewById(R.id.b_maps_positioning);
-        // Construct a FusedLocationProviderClient.
-        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         ZaPivasom = findViewById(R.id.marshrut);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +59,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 if (mMap.getMyLocation() != null) {
                     Location location = mMap.getMyLocation();
                     Log.e("DATA", String.valueOf(location.getLongitude()));
-                    Toast.makeText(getApplicationContext(),location.getProvider().toString() + String.valueOf(location.getLatitude()) + String.valueOf(location.getLongitude()), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), location.getProvider() + location.getLatitude() + location.getLongitude(), Toast.LENGTH_SHORT).show();
                     mMap.setOnMyLocationClickListener(new GoogleMap.OnMyLocationClickListener() {
                         @Override
                         public void onMyLocationClick(@NonNull Location location) {
@@ -71,7 +67,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             IMmarker = mMap.addMarker(new MarkerOptions()
                                     .position(MyPos)
                                     .title("MyPosition")
-                                    .snippet("Gobuhat?"));
+                                    .snippet("Gobuhat?")
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
                         }
                     });
                 }
@@ -93,20 +90,21 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 MapsJson.getInstance().getApi().getRoute(MyStrPos, PivoStrPos, Q.MapsToken).enqueue(new Callback<Generic>() {
                     @Override
                     public void onResponse(Call<Generic> call, Response<Generic> response) {
+                        if(polyline != null)
+                            polyline.remove();
                         Log.e("O DA", String.valueOf(response.body().routes.get(0).legs.get(0).steps.get(0).polyline.getPoints()));
-                        PolylineDecoder polylineDecoder = new PolylineDecoder();
                         List<LatLng> points;
                         List<LatLng> points2;
-                        points = polylineDecoder.decode(response.body().routes.get(0).legs.get(0).steps.get(0).polyline.getPoints());
-                        points2 = polylineDecoder.decode(response.body().routes.get(0).overview_polyline.getPoints());
-                        for(int i = 0; i < points.size(); i++){
+                        points = PolyUtil.decode(response.body().routes.get(0).legs.get(0).steps.get(0).polyline.getPoints());
+                        points2 = PolyUtil.decode(response.body().routes.get(0).overview_polyline.getPoints());
+                        for (int i = 0; i < points.size(); i++) {
                             Log.e("DECODER", points.get(i).toString());
                         }
                         PolylineOptions line = new PolylineOptions();
-                        line.width(4f).color(R.color.colorPrimary);
+                        line.width(6f).color(R.color.quantum_googgreen);
                         LatLngBounds.Builder latLngBuilder = new LatLngBounds.Builder();
-                        for (int i = 0; i < points.size(); i++) {
 
+                        for (int i = 0; i < points.size(); i++) {
                             line.add(points.get(i));
                             latLngBuilder.include(points.get(i));
                         }
@@ -117,7 +115,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             latLngBuilder.include(points2.get(i));
                         }
 
-                        mMap.addPolyline(line);
+                        polyline = mMap.addPolyline(line);
                         int size = getResources().getDisplayMetrics().widthPixels;
                         LatLngBounds latLngBounds = latLngBuilder.build();
                         CameraUpdate track = CameraUpdateFactory.newLatLngBounds(latLngBounds, size, size, 25);
@@ -146,15 +144,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
+                if(Tap != null)
+                    Tap.remove();
                 Pivopos = latLng;
                 Tap = mMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title("Baldesh")
-                        .snippet("EDEM ZA PIVASOM S DAD VOVOI"));
+                        .snippet("EDEM ZA PIVASOM S DAD VOVOI")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
             }
         });
     }
-
 
 
     @Override
@@ -164,9 +164,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     @Override
     public boolean onMyLocationButtonClick() {
-        if(IMmarker != null)
+        if (IMmarker != null)
             IMmarker.remove();
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        if(mMap.getMyLocation() != null) {
+            MyPos = new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude());
+            IMmarker = mMap.addMarker(new MarkerOptions()
+                    .position(MyPos)
+                    .title("SASHA TI KOSTIL")
+                    .snippet("SASHA NEEET NE KURI TRAVU")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+            Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        }
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
