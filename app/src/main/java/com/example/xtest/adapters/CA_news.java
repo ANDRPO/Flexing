@@ -18,6 +18,8 @@ import com.example.xtest.R;
 
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class CA_news extends ArrayAdapter<GAS_news> {
 
     private LayoutInflater inflater;
@@ -47,7 +49,7 @@ public class CA_news extends ArrayAdapter<GAS_news> {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getContext().startActivity(new Intent(getContext(), MapsActivity.class));
+                getContext().startActivity(new Intent(getContext(), MapsActivity.class).setFlags(FLAG_ACTIVITY_NEW_TASK));
             }
         });
 

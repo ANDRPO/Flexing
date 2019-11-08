@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.xtest.generic.Login_F;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +24,7 @@ public class Auth extends AppCompatActivity {
     private Button b_in_auth, b_registration_auth;
     private EditText et_login_auth, et_password_auth;
     private String login, password;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
